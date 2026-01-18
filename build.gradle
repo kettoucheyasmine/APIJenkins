@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'org.sonarqube' version '4.4.1.3373'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JUnit pour les tests unitaires
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+    // Cucumber (optionnel mais requis pour le TP)
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.14.0'
+}
+
+// Configuration des tests JUnit 5
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+// Rapport Jacoco (couverture de code)
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+// Publication Maven
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = 'https://mymavenrepo.com/repo/cEmjfkxugPlzLxXg1A2B/'  // À remplacer par votre URL réelle
+            credentials {
+                username = project.findProperty("mavenUser") ?: System.getenv("MAVEN_USER")
+                password = project.findProperty("mavenPassword") ?: System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
