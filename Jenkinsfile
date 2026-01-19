@@ -75,6 +75,7 @@ pipeline {
            slackSend(
                        tokenCredentialId: 'slack-bot-token',  // ← Token OAuth
                        channel: 'webhook',  // ← Nom du canal sans #
+                       botUser: true,  // ← AJOUTÉ
                        message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
                    )
        }
@@ -93,6 +94,7 @@ pipeline {
            slackSend(
                        tokenCredentialId: 'slack-bot-token',
                        channel: 'webhook',
+                       botUser: true,  // ← AJOUTÉ
                        message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
                    )
        }
