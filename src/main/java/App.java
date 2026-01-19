@@ -15,7 +15,7 @@ public class App {
     }
 
     /**
-     * Méthode de simulation de traitement métier
+     * Méthode de simulation de traitement
      */
     public static boolean isValidUser(String username) {
         return username != null && username.length() >= 3;
