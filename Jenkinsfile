@@ -73,10 +73,10 @@ pipeline {
                """
            )
            slackSend(
-               urlCredentialId: 'slack-webhook-url',  // ← CHANGÉ
-               channel: 'webhook',
-               message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-           )
+                       tokenCredentialId: 'slack-bot-token',  // ← Token OAuth
+                       channel: 'webhook',  // ← Nom du canal sans #
+                       message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                   )
        }
        failure {
            mail (
@@ -91,10 +91,10 @@ pipeline {
                """
            )
            slackSend(
-               urlCredentialId: 'slack-webhook-url',  // ← CHANGÉ
-               channel: 'webhook',
-               message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-           )
+                       tokenCredentialId: 'slack-bot-token',
+                       channel: 'webhook',
+                       message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                   )
        }
    }
 }
