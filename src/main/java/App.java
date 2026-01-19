@@ -6,7 +6,7 @@ public class App {
     public static void main(String[] args) {
         System.out.println("API démarrée – prêt pour l'intégration continue !");
     }
-
+/*hello world*/
     /**
      * Méthode utilitaire simple à tester
      */
