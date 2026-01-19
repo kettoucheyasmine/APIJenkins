@@ -61,11 +61,47 @@ pipeline {
     }
 
     post {
-        success {
-            echo '✅ Pipeline terminé avec succès !'
-        }
-        failure {
-            echo '❌ Le pipeline a échoué.'
+            success {
+                script {
+                    echo '✅ Pipeline terminé avec succès !'
+                    // 🔔 Notification par email
+                    emailext (
+                        subject: "✅ SUCCESS: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """
+                        Le pipeline s'est exécuté avec succès !
+                        Projet : ${env.JOB_NAME}
+                        Build : ${env.BUILD_NUMBER}
+                        URL : ${env.BUILD_URL}
+                        """,
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                        to: 'my_kettouche@esi.dz'  // Remplacez par votre email
+                    )
+
+                    // 🔔 (Optionnel) Notification Slack
+                    // slackSend channel: '#ci-cd', message: "✅ Build réussi : ${env.JOB_NAME} #${env.BUILD_NUMBER}", color: 'good'
+                }
+            }
+
+            failure {
+                script {
+                    echo '❌ Le pipeline a échoué.'
+                    // 🔔 Notification par email en cas d'échec
+                    emailext (
+                        subject: "❌ FAILURE: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """
+                        Le pipeline a échoué à l'étape : ${currentBuild.currentResult}
+                        Projet : ${env.JOB_NAME}
+                        Build : ${env.BUILD_NUMBER}
+                        URL : ${env.BUILD_URL}
+                        Logs : ${env.BUILD_URL}console
+                        """,
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                        to: 'my_kettouche@esi.de'
+                    )
+                    //
+                    // 🔔 (Optionnel) Slack
+                    // slackSend channel: '#ci-cd', message: "❌ Build échoué : ${env.JOB_NAME} #${env.BUILD_NUMBER}", color: 'danger'
+                }
+            }
         }
     }
-}
