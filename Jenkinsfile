@@ -74,9 +74,7 @@ pipeline {
             )
             // 👇 Ajout Slack
            slackSend(
-                       tokenCredentialId: 'slack-webhook-url',  // ← ID du credential
-                       channel: '#ci-cd',
-                       color: 'good',
+                       tokenCredentialId: 'slack-webhook-url',
                        message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
                    )
         }
@@ -94,11 +92,9 @@ pipeline {
             )
             // 👇 Ajout Slack
              slackSend(
-                        tokenCredentialId: 'slack-webhook-url',  // ← ID du credential
-                        channel: '#ci-cd',
-                        color: 'danger',
-                        message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-                    )
+                         tokenCredentialId: 'slack-webhook-url',
+                         message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                     )
         }
     }
 }
