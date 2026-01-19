@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    tools {
-        // Assurez-vous que ce nom correspond à celui défini dans Jenkins → Global Tool Configuration
-        jdk 'jdk11'
-    }
+
 
     stages {
         stage('Test') {
