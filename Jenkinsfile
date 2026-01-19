@@ -72,7 +72,6 @@ pipeline {
                URL : ${env.BUILD_URL}
                """
            )
-           // 👇 Correction ici
            slackSend(
                urlCredentialId: 'slack-webhook-url',  // ← CHANGÉ
                channel: 'webhook',
@@ -91,7 +90,6 @@ pipeline {
                Logs : ${env.BUILD_URL}console
                """
            )
-           // 👇 Correction ici
            slackSend(
                urlCredentialId: 'slack-webhook-url',  // ← CHANGÉ
                channel: 'webhook',
