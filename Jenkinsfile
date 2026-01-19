@@ -73,14 +73,12 @@ pipeline {
                 """
             )
             // 👇 Ajout Slack
-            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK')]) {
-                slackSend(
-                    webhookUrl: "${SLACK_WEBHOOK}",
-                    channel: '#ci-cd',
-                    color: 'good',
-                    message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-                )
-            }
+           slackSend(
+                       tokenCredentialId: 'slack-webhook-url',  // ← ID du credential
+                       channel: '#ci-cd',
+                       color: 'good',
+                       message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                   )
         }
         failure {
             mail (
@@ -95,14 +93,12 @@ pipeline {
                 """
             )
             // 👇 Ajout Slack
-            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK')]) {
-                slackSend(
-                    webhookUrl: "${SLACK_WEBHOOK}",
-                    channel: '#ci-cd',
-                    color: 'danger',
-                    message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-                )
-            }
+             slackSend(
+                        tokenCredentialId: 'slack-webhook-url',  // ← ID du credential
+                        channel: '#ci-cd',
+                        color: 'danger',
+                        message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                    )
         }
     }
 }
