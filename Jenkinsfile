@@ -74,7 +74,7 @@ pipeline {
                         URL : ${env.BUILD_URL}
                         """,
                         recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                        to: 'my_kettouche@esi.dz'  // Remplacez par votre email
+                        to: 'kettyasmine2004@gmail.com'  // Remplacez par votre email
                     )
 
                     // 🔔 (Optionnel) Notification Slack
@@ -96,7 +96,7 @@ pipeline {
                         Logs : ${env.BUILD_URL}console
                         """,
                         recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                        to: 'my_kettouche@esi.dz'
+                        to: 'kettyasmine2004@gmail.com'
                     )
                     //
                     // 🔔 (Optionnel) Slack
