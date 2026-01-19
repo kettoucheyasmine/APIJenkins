@@ -62,29 +62,53 @@ pipeline {
 
     post {
         success {
-            mail (
-                to: 'kettyasmine2004@gmail.com',
-                subject: "✅ SUCCESS: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                body: """
-                Le pipeline s'est exécuté avec succès !
-                Projet : ${env.JOB_NAME}
-                Build : ${env.BUILD_NUMBER}
-                URL : ${env.BUILD_URL}
-                """
-            )
+            script {
+                // 📧 Email
+                mail (
+                    to: 'kettyasmine2004@gmail.com',
+                    subject: "✅ SUCCESS: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                    body: """
+                    Le pipeline s'est exécuté avec succès !
+                    Projet : ${env.JOB_NAME}
+                    Build : ${env.BUILD_NUMBER}
+                    URL : ${env.BUILD_URL}
+                    """
+                )
+                // 💬 Slack
+                withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK')]) {
+                    slackSend(
+                        webhookUrl: "${SLACK_WEBHOOK}",
+                        channel: '#ci-cd',
+                        color: 'good',
+                        message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                    )
+                }
+            }
         }
         failure {
-            mail (
-                to: 'kettyasmine2004@gmail.com',
-                subject: "❌ FAILURE: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                body: """
-                Le pipeline a échoué.
-                Projet : ${env.JOB_NAME}
-                Build : ${env.BUILD_NUMBER}
-                URL : ${env.BUILD_URL}
-                Logs : ${env.BUILD_URL}console
-                """
-            )
+            script {
+                // 📧 Email
+                mail (
+                    to: 'kettyasmine2004@gmail.com',
+                    subject: "❌ FAILURE: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                    body: """
+                    Le pipeline a échoué.
+                    Projet : ${env.JOB_NAME}
+                    Build : ${env.BUILD_NUMBER}
+                    URL : ${env.BUILD_URL}
+                    Logs : ${env.BUILD_URL}console
+                    """
+                )
+                // 💬 Slack
+                withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK')]) {
+                    slackSend(
+                        webhookUrl: "${SLACK_WEBHOOK}",
+                        channel: '#ci-cd',
+                        color: 'danger',
+                        message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                    )
+                }
+            }
         }
     }
 }
