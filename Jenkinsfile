@@ -1,20 +1,15 @@
 pipeline {
     agent any
 
-
-
     stages {
         stage('Test') {
             steps {
-                echo '🚀 Exécution des tests unitaires et Cucumber...'
-                sh './gradlew test jacocoTestReport'
+                echo '🚀 Exécution des tests unitaires...'
+                bat 'gradlew.bat test jacocoTestReport'
             }
             post {
                 always {
-                    // Publier les résultats des tests
                     junit 'build/test-results/test/TEST-*.xml'
-                    // Publier la couverture de code Jacoco
-                    publishCoverage adapters: [jacocoAdapter('build/reports/jacoco/test/jacocoTestReport.xml')], calculateDiffForChangeRequests: false, sourceFileResolver: sourceFiles('NEVER_STORE')
                 }
             }
         }
@@ -23,15 +18,14 @@ pipeline {
             steps {
                 echo '🔍 Analyse du code avec SonarQube...'
                 withSonarQubeEnv('MonSonar') {
-                    sh './gradlew sonar --info'
+                    bat 'gradlew.bat sonarqube --info'
                 }
             }
         }
 
         stage('Code Quality') {
             steps {
-                echo '✅ Vérification de la Quality Gate SonarQube...'
-                // Attendre max 5 minutes
+                echo '✅ Vérification de la Quality Gate...'
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
@@ -41,7 +35,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo '📦 Génération du JAR...'
-                sh './gradlew build'
+                bat 'gradlew.bat build'
             }
             post {
                 success {
@@ -60,7 +54,7 @@ pipeline {
                         passwordVariable: 'MAVEN_PASSWORD'
                     )
                 ]) {
-                    sh './gradlew publish -PmavenUser=$MAVEN_USER -PmavenPassword=$MAVEN_PASSWORD'
+                    bat 'gradlew.bat publish -PmavenUser=%MAVEN_USER% -PmavenPassword=%MAVEN_PASSWORD%'
                 }
             }
         }
