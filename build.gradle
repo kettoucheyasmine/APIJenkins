@@ -5,21 +5,29 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'kettouche.yasmine'          // Remplacez par votre groupe (ex: ensia.td)
-version = '1.0.0-SNAPSHOT'     // Version de votre artefact
+group = 'kettouche.yasmine'
+version = '1.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'io.cucumber:cucumber-java:7.14.0'
-    testImplementation 'io.cucumber:cucumber-junit:7.14.0'
+
+    // Cucumber compatible JUnit 5
+    testImplementation 'io.cucumber:cucumber-java:7.18.1'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.18.1'
 }
+
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
+
+    // Génère le rapport Cucumber au bon endroit
+    systemProperty 'cucumber.plugin', 'json:build/reports/cucumber/report.json'
+    systemProperty 'cucumber.publish.quiet', 'true'
 }
 
 jacocoTestReport {
@@ -30,18 +38,25 @@ jacocoTestReport {
     }
 }
 
+// Tâche optionnelle : génération de la Javadoc
+task generateJavadoc(type: Javadoc) {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+    destinationDir = file("$buildDir/docs/javadoc")
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            // Optionnel : vous pouvez aussi définir explicitement :
-            // groupId = 'com.example'
-            // artifactId = 'my-api'
-            // version = '1.0.0'
+            groupId = 'kettouche.yasmine'
+            artifactId = 'my-api'
+            version = '1.0.0-SNAPSHOT'
         }
     }
     repositories {
         maven {
+            // ⚠️ URL SANS ESPACES à la fin !
             url = 'https://mymavenrepo.com/repo/cEmjfkxugPlzLxXg1A2B/'
             credentials {
                 username = project.findProperty("mavenUser") ?: System.getenv("MAVEN_USER")

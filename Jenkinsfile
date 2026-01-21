@@ -11,7 +11,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    echo '🚀 Exécution des tests unitaires...'
+                    echo '🚀 Exécution des tests unitaires et Cucumber...'
                     bat 'gradlew.bat test'
 
                     echo '📊 Génération du rapport JaCoCo...'
@@ -21,17 +21,13 @@ pipeline {
                     junit allowEmptyResults: true, testResults: '**/build/test-results/test/TEST-*.xml'
 
                     echo 'Generating Cucumber Reports...'
-                    try {
-                        cucumber buildStatus: 'UNSTABLE',
-                                reportTitle: 'Cucumber Report',
-                                fileIncludePattern: '**/*.json',
-                                trendsLimit: 10,
-                                classifications: [
-                                    [key: 'Browser', value: 'Chrome']
-                                ]
-                    } catch (Exception e) {
-                        echo '⚠️ Aucun rapport Cucumber trouvé – ignoré'
-                    }
+                    cucumber buildStatus: 'UNSTABLE',
+                            reportTitle: 'Cucumber Report',
+                            fileIncludePattern: '**/build/reports/cucumber/report.json',
+                            trendsLimit: 10,
+                            classifications: [
+                                [key: 'Framework', value: 'Cucumber + JUnit 5']
+                            ]
                 }
             }
         }
