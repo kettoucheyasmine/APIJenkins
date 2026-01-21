@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
 }
 
+// 🔴 Ajoutez ces lignes 👇
 group = 'kettouche.yasmine'          // Remplacez par votre groupe (ex: ensia.td)
 version = '1.0.0-SNAPSHOT'     // Version de votre artefact
 
