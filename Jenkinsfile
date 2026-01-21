@@ -21,13 +21,17 @@ pipeline {
                     junit allowEmptyResults: true, testResults: '**/build/test-results/test/TEST-*.xml'
 
                     echo 'Generating Cucumber Reports...'
-                    cucumber buildStatus: 'UNSTABLE',
-                            reportTitle: 'Cucumber Report',
-                            fileIncludePattern: '**/*.json',
-                            trendsLimit: 10,
-                            classifications: [
-                                [key: 'Browser', value: 'Chrome']
-                            ]
+                    try {
+                        cucumber buildStatus: 'UNSTABLE',
+                                reportTitle: 'Cucumber Report',
+                                fileIncludePattern: '**/*.json',
+                                trendsLimit: 10,
+                                classifications: [
+                                    [key: 'Browser', value: 'Chrome']
+                                ]
+                    } catch (Exception e) {
+                        echo '⚠️ Aucun rapport Cucumber trouvé – ignoré'
+                    }
                 }
             }
         }
@@ -62,11 +66,15 @@ pipeline {
                     bat 'gradlew.bat build -x test'
 
                     echo '📚 Génération de la Javadoc...'
-                    bat 'gradlew.bat generateJavadoc || echo "Javadoc non configurée – ignorée"'
+                    try {
+                        bat 'gradlew.bat generateJavadoc'
+                        archiveArtifacts artifacts: 'build/docs/javadoc/**/*', fingerprint: true, allowEmptyArchive: false
+                    } catch (Exception e) {
+                        echo '⚠️ Javadoc non configurée – ignorée'
+                    }
 
                     echo 'Archiving artifacts...'
                     archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'build/docs/javadoc/**/*', fingerprint: true, allowEmptyArchive: true
                 }
             }
         }
@@ -89,7 +97,7 @@ pipeline {
 
     post {
         always {
-            echo 'Nettoyage du workspace...'
+            echo '🧹 Nettoyage du workspace...'
             cleanWs()
         }
         success {
