@@ -18,7 +18,6 @@ dependencies {
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
     testImplementation 'io.cucumber:cucumber-junit:7.14.0'
 }
-/*hello world helloworld*/
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
