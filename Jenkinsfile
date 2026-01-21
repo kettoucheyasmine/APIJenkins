@@ -96,43 +96,79 @@ pipeline {
             echo '🧹 Nettoyage du workspace...'
             cleanWs()
         }
+
         success {
-            mail (
-                to: 'kettyasmine2004@gmail.com',
-                subject: "✅ SUCCESS: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                body: """
-                Le pipeline s'est exécuté avec succès !
-                Projet : ${env.JOB_NAME}
-                Build : ${env.BUILD_NUMBER}
-                URL : ${env.BUILD_URL}
-                """
-            )
-            slackSend(
-                tokenCredentialId: 'slack-bot-token',
-                channel: 'webhook',
-                botUser: true,
-                message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-            )
+            // 📧 Email
+            script {
+                try {
+                    mail (
+                        to: 'kettyasmine2004@gmail.com',
+                        subject: "✅ SUCCESS: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """
+Le pipeline s'est exécuté avec succès !
+Projet : ${env.JOB_NAME}
+Build : ${env.BUILD_NUMBER}
+URL : ${env.BUILD_URL}
+                        """.stripIndent()
+                    )
+                    echo '✅ Email de succès envoyé.'
+                } catch (Exception e) {
+                    echo "❌ Échec envoi email (succès) : ${e.message}"
+                }
+            }
+
+            // 💬 Slack
+            script {
+                try {
+                    slackSend(
+                        tokenCredentialId: 'slack-bot-token',
+                        channel: 'webhook',
+                        botUser: true,
+                        message: "✅ Build réussi : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
+                    )
+                    echo '✅ Message Slack de succès envoyé.'
+                } catch (Exception e) {
+                    echo "❌ Échec envoi Slack (succès) : ${e.message}"
+                }
+            }
         }
+
         failure {
-            mail (
-                to: 'kettyasmine2004@gmail.com',
-                subject: "❌ FAILURE: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                body: """
-                Le pipeline a échoué.
-                Projet : ${env.JOB_NAME}
-                Build : ${env.BUILD_NUMBER}
-                URL : ${env.BUILD_URL}
-                Logs : ${env.BUILD_URL}console
-                Stage échoué : ${env.STAGE_NAME}
-                """
-            )
-            slackSend(
-                tokenCredentialId: 'slack-bot-token',
-                channel: 'webhook',
-                botUser: true,
-                message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>\nStage : ${env.STAGE_NAME}"
-            )
+            // 📧 Email
+            script {
+                try {
+                    mail (
+                        to: 'kettyasmine2004@gmail.com',
+                        subject: "❌ FAILURE: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """
+Le pipeline a échoué.
+Projet : ${env.JOB_NAME}
+Build : ${env.BUILD_NUMBER}
+URL : ${env.BUILD_URL}
+Logs : ${env.BUILD_URL}console
+Stage échoué : ${env.STAGE_NAME}
+                        """.stripIndent()
+                    )
+                    echo '✅ Email d’échec envoyé.'
+                } catch (Exception e) {
+                    echo "❌ Échec envoi email (échec) : ${e.message}"
+                }
+            }
+
+            // 💬 Slack
+            script {
+                try {
+                    slackSend(
+                        tokenCredentialId: 'slack-bot-token',
+                        channel: 'webhook',
+                        botUser: true,
+                        message: "❌ Build échoué : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>\nStage : ${env.STAGE_NAME}"
+                    )
+                    echo '✅ Message Slack d’échec envoyé.'
+                } catch (Exception e) {
+                    echo "❌ Échec envoi Slack (échec) : ${e.message}"
+                }
+            }
         }
     }
 }
