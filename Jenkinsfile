@@ -89,7 +89,7 @@ pipeline {
 
     post {
         always {
-            echo '🧹 Nettoyage du workspace...'
+            echo 'Nettoyage du workspace...'
             cleanWs()
         }
         success {
